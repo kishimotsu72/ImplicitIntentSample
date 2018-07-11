@@ -68,4 +68,25 @@ public class IntentStartActivity extends AppCompatActivity {
         GPSLocationListener locationListener = new GPSLocationListener();
     }
 
+    private class GPSLocationListener implements LocationListener {
+
+        @Override
+        public void onLocationChanged(Location location) {
+            _latitude = location.getLatitude();
+            _longitude = location.getLongitude();
+            _tvLatitude.setText(Double.toString(_latitude));
+            _tvLongitude.setText(Double.toString(_longitude));
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+        @Override
+        public void onProviderEnabled(String provider) {}
+
+        @Override
+        public void onProviderDisabled(String provider) {}
+    }
+}
+
 }
