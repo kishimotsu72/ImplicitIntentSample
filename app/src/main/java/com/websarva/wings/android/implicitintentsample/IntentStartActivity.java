@@ -19,19 +19,44 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 public class IntentStartActivity extends AppCompatActivity {
-
     private double _latitude = 0;
 
     private double _longitude = 0;
 
     private TextView _tvLatitude;
-
     private TextView _tvLongitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intent_start);
+
+        _tvLatitude = findViewById(R.id.tvLatitude);
+        _tvLongitude = findViewById(R.id.tvLongitude);
+
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        GPSLocationListener locationListener = new GPSLocationListener();
+
+
+
+        if(ActivityCompat.checkSelfPermission(IntentStartActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
+            ActivityCompat.requestPermissions(IntentStartActivity.this, permissions, 1000);
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if(requestCode == 1000 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            GPSLocationListener locationListener = new GPSLocationListener();
+            if(ActivityCompat.checkSelfPermission(IntentStartActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        }
     }
     public void onMapSearchButtonClick(View view) {
         EditText etSearchWord = findViewById(R.id.etSearchWord);
@@ -56,25 +81,15 @@ public class IntentStartActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_intent_start);
-
-        _tvLatitude = findViewById(R.id.tvLatitude);
-        _tvLongitude = findViewById(R.id.tvLongitude);
-
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        GPSLocationListener locationListener = new GPSLocationListener();
-    }
-
     private class GPSLocationListener implements LocationListener {
 
         @Override
         public void onLocationChanged(Location location) {
             _latitude = location.getLatitude();
             _longitude = location.getLongitude();
+
             _tvLatitude.setText(Double.toString(_latitude));
+
             _tvLongitude.setText(Double.toString(_longitude));
         }
 
@@ -87,6 +102,4 @@ public class IntentStartActivity extends AppCompatActivity {
         @Override
         public void onProviderDisabled(String provider) {}
     }
-}
-
 }
