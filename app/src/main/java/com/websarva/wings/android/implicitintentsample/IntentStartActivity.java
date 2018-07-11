@@ -24,6 +24,10 @@ public class IntentStartActivity extends AppCompatActivity {
 
     private double _longitude = 0;
 
+    private TextView _tvLatitude;
+
+    private TextView _tvLongitude;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +54,18 @@ public class IntentStartActivity extends AppCompatActivity {
         Uri uri = Uri.parse(uriStr);
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_intent_start);
+
+        _tvLatitude = findViewById(R.id.tvLatitude);
+        _tvLongitude = findViewById(R.id.tvLongitude);
+
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        GPSLocationListener locationListener = new GPSLocationListener();
     }
 
 }
